@@ -60,13 +60,22 @@ metadata:
     test: liveness
   name: liveness-exec
 spec:
-  containers:
-  - name: liveness
-    image: vanessakovalsky/my-healtcheck:v1
-    livenessProbe:
-      httpGet:
-        path: /healthz.html #Your endpoint for health check.
-        port: 8080
-        httpHeaders:
-        - name: X-Custom-Header
-          value: Awesome
+  replicas: 1
+  selector:
+    matchLabels:        # labels the replica selector should match
+      app: liveness
+  template:
+    metadata:
+      labels:
+        app: liveness      # label for replica selector to match  
+    spec:
+      containers:
+      - name: liveness
+        image: vanessakovalsky/my-healtcheck:v1
+        livenessProbe:
+          httpGet:
+            path: /healthz.html #Your endpoint for health check.
+            port: 8080
+            httpHeaders:
+            - name: X-Custom-Header
+              value: Awesome
